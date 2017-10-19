@@ -1,0 +1,79 @@
+		
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    
+      Fresh food for dogs, delivered - NomNomNow
+    
+  </title>
+
+  <link rel="stylesheet" href="./static/main.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<h1 class="centered">Calculate Tax</h1>
+	<div class="width-auto-fixed">
+        <form>
+        	<div class="container-flex flex-justify-center">
+              	<div class="padding-bottom-small padding-left-small padding-right-small width-auto-fixed">
+              		<label class="label" for="amount">US Dollar($)</label>
+                 	<input type="text" name="amount" placeholder="Enter US dollar amount" maxlength="50" required="">
+                </div>
+                <div class="padding-bottom-small padding-left-small padding-right-small width-auto-fixed">
+                	<label class="label" for="zipcode">Zip Code</label>
+                  	<input type="text" name="zipcode" placeholder="Enter a zip code" maxlength="50" required="">
+                </div>
+	            <div class="flex-align-self-start padding-bottom-small padding-left-small padding-right-small width-auto-fixed">
+	              	<button type="submit">Submit</button>
+	            </div>
+            </div>
+            <div class="container-flex flex-justify-center">
+	            <div class="padding-bottom-small padding-left-small padding-right-small width-auto-fixed hidden" id='result'>
+	            	<div>
+				        <span class="bold">Price</span>: <span id='price'></span>
+				    </div>
+				    <div>
+				        <span class="bold">Tax Amount</span>: <span id='taxAmount'></span>
+				    </div>
+				    <div>
+				        <span class="bold">Total Price</span>: <span id='totalPrice'></span>
+				    </div>
+	            </div>
+	        </div>
+          </div>
+        </form>
+      </div>
+</body>
+
+<script>
+	$("button[type=submit]").click(function(e){
+		e.preventDefault();
+		var zipcode = $("input[name=zipcode]").val();
+		var amount = parseFloat($("input[name=amount]").val());
+		var url = "https://www.nomnomnow.com/nom_api/taxes/get?zipcode="+zipcode;
+		$.ajax({
+		    url: url,
+		    type: 'GET',
+		    success: function(data){ 
+		    	if (data.error) {
+		    		taxRate = 0;
+		    	} else {
+		    		taxRate = parseFloat(data.taxRate);
+		        }
+		        var tax = amount * taxRate / 100.0;
+		        var res = amount + tax;
+	        	$("input[name=totalPrice]").val(res);
+	        	$("#price").html(amount);
+	        	$("#taxAmount").html(tax);
+	        	$("#totalPrice").html(res);
+	        	$("#result").show();
+		    },
+		    error: function(data) {
+		        alert(data);
+		    }
+		});
+	});
+</script>
+</html>
